@@ -274,7 +274,7 @@ def _parse_artist(json_obj):
     for role in json_obj.get('artistTypes', [json_obj.get('type')]):
         roles.append(Role(role))
 
-    return Artist(id=json_obj['id'], name=json_obj['name'], roles=roles, role=roles[0])
+    return Artist(raw=str(json_obj), id=json_obj['id'], name=json_obj['name'], roles=roles, role=roles[0])
 
 
 def _parse_artists(json_obj):
@@ -287,6 +287,7 @@ def _parse_album(json_obj, artist=None, artists=None):
     if artists is None:
         artists = _parse_artists(json_obj['artists'])
     kwargs = {
+        'raw': str(json_obj),
         'id': json_obj['id'],
         'name': json_obj['title'],
         'num_tracks': json_obj.get('numberOfTracks'),
@@ -320,7 +321,7 @@ def _parse_playlist(json_obj):
         'num_tracks': int(json_obj['numberOfTracks']),
         'duration': int(json_obj['duration']),
         'is_public': json_obj['publicPlaylist'],
-        #TODO 'creator': _parse_user(json_obj['creator']),
+        # TODO 'creator': _parse_user(json_obj['creator']),
     }
     return Playlist(**kwargs)
 
@@ -333,12 +334,13 @@ def _parse_media(json_obj):
         album = _parse_album(json_obj['album'], artist, artists)
 
     kwargs = {
+        'raw': str(json_obj),
         'id': json_obj['id'],
         'name': json_obj['title'],
         'duration': json_obj['duration'],
         'track_num': json_obj['trackNumber'],
         'disc_num': json_obj['volumeNumber'],
-        'version' : json_obj.get('version'),
+        'version': json_obj.get('version'),
         'popularity': json_obj['popularity'],
         'artist': artist,
         'artists': artists,

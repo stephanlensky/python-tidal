@@ -32,6 +32,7 @@ class Model(object):
 
 
 class Album(Model):
+    raw = None
     artist = None
     artists = []
     num_tracks = -1
@@ -57,6 +58,7 @@ class Album(Model):
 
 
 class Artist(Model):
+    raw = None
     roles = []
     role = None
 
@@ -108,6 +110,7 @@ class Playlist(Model):
 
 
 class Media(Model):
+    raw = None
     duration = -1
     track_num = -1
     disc_num = 1
