@@ -24,6 +24,10 @@ import datetime
 import json
 import logging
 import requests
+
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
 from .models import Artist, Album, Track, Video, Playlist, SearchResult, Category, Role
 try:
     from urlparse import urljoin
@@ -60,6 +64,11 @@ class Session(object):
         self.country_code = None
         self.user = None
         self._config = config
+        self.s = requests.Session()
+        retries = Retry(total=10,
+                        backoff_factor=0.4,
+                        status_forcelist=[401, 429, 500, 502, 503, 504])
+        self.s.mount('https://', HTTPAdapter(max_retries=retries))
         """:type _config: :class:`Config`"""
 
     def load_session(self, session_id, country_code=None, user_id=None):
@@ -107,7 +116,7 @@ class Session(object):
         if params:
             request_params.update(params)
         url = urljoin(self._config.api_location, path)
-        request = requests.request(method, url, params=request_params, data=data)
+        request = self.s.request(method, url, params=request_params, data=data)
         log.debug("request: %s", request.request.url)
         request.raise_for_status()
         if request.content:
