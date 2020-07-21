@@ -24,14 +24,12 @@ import datetime
 import json
 import logging
 import requests
-<<<<<<< HEAD
 
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-=======
 import base64
->>>>>>> upstream/master
+
 from .models import Artist, Album, Track, Video, Playlist, SearchResult, Category, Role
 
 try:
